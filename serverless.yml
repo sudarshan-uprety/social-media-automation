@@ -58,11 +58,8 @@ plugins:
   - serverless-deployment-bucket
 
 functions:
-  - ${file(functions/product/index.yml)}
-  - ${file(functions/category/index.yml)}
-  - ${file(functions/size/index.yml)}
-  - ${file(functions/users/index.yml)}
-  - ${file(functions/type/index.yml)}
-  - ${file(functions/color/index.yml)}
+  - ${file(functions/facebook/index.yml)}
+  - ${file(functions/instagram/index.yml)}
+  - ${file(functions/youtube/index.yml)}
+  - ${file(functions/tiktok/index.yml)}
   - ${file(functions/s3/index.yml)}
-  - ${file(functions/events/index.yml)}
