@@ -1,0 +1,68 @@
+service: social-media-automation
+useDotenv: true
+
+custom:
+  stage: ${opt:stage, 'dev'}
+  service: ${self:service}
+  project: "social-media-automation"
+  serverless-offline:
+    host: 0.0.0.0
+    port: 3000
+    stage: ${self:custom.stage}
+    region: ap-south-1
+    lambdaPort: 3002
+  pythonRequirements:
+    layer:
+      name: ${self:custom.service}-${self:custom.stage}-dependencies
+      description: Python requirements lambda layer
+      compatibleRuntimes:
+        - python3.10
+    slim: true
+    useStaticCache: true
+    useDownloadCache: true
+  prune:
+    automatic: true
+    number: 1
+  deploymentBucket:
+    name: product-service-${self:custom.stage}
+    serverSideEncryption: AES256
+
+provider:
+  name: aws
+  runtime: python3.10
+  stage: ${self:custom.stage}
+  region: ap-south-1
+  environment:
+    STAGE: ${self:provider.stage}
+  timeout: 30
+  memorySize: 256
+  logRetentionInDays: 3
+
+package:
+  individually: false
+  patterns:
+    - '!node_modules/**'
+    - '!venv/**'
+    - '!.vscode/**'
+    - '!.git/**'
+    - '!tests/**'
+    - '!*.md'
+    - '!package*.json'
+  excludeDevDependencies: false
+
+plugins:
+  - serverless-dotenv-plugin
+  - serverless-offline
+  - serverless-python-requirements
+  - serverless-prune-plugin
+  - serverless-deployment-bucket
+
+functions:
+  - ${file(functions/product/index.yml)}
+  - ${file(functions/category/index.yml)}
+  - ${file(functions/size/index.yml)}
+  - ${file(functions/users/index.yml)}
+  - ${file(functions/type/index.yml)}
+  - ${file(functions/color/index.yml)}
+  - ${file(functions/s3/index.yml)}
+  - ${file(functions/events/index.yml)}
